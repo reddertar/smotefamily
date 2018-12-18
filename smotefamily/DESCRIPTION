@@ -1,6 +1,6 @@
 Package: smotefamily
 Title: A Collection of Oversampling Techniques for Class Imbalance Problem Based on SMOTE
-Version: 1.2
+Version: 1.3
 Date: 2018-01-30
 Authors@R: person("Wacharasak","Siriseriwan",email="wacharasak.s@gmail.com", role=c("aut","cre"))
 Maintainer: Wacharasak Siriseriwan <wacharasak.s@gmail.com>
