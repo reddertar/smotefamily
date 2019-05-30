@@ -1,4 +1,4 @@
-ADAS=function(X,target,K=5)   
+ADAS=function(X,target,K=5,show_process=TRUE)   
 {
 	ncD=ncol(X) #The number of attributes
 	n_target=table(target)
@@ -10,6 +10,8 @@ ADAS=function(X,target,K=5)
     sizeP=nrow(P_set) #The number of positive instances
 	sizeN=nrow(N_set) #The number of negative instances
 	Darr=rbind(P_set,N_set)  #The re-arranged data with positive first
+	source("knearest.R")
+	source("kncount.R")
 	knear_D=knearest(Darr,P_set,K)
 	knct=kncount(knear_D,sizeP)
 	sum_of_negN=sum(knct[,2])
@@ -17,6 +19,10 @@ ADAS=function(X,target,K=5)
 	num_syn_i=rep(0,sizeP)
 	round((sizeN-sizeP)*knct[,2]/sum_of_negN)->num_syn_i
 #print(nG)	
+	if(show_process)
+	{
+		pb <- winProgressBar("test progress bar", "Some information in %", 0, sizeP, 10)
+	}
 	syn_dat=NULL
 for(i in 1:sizeP)
 {    
@@ -28,9 +34,17 @@ for(i in 1:sizeP)
 		 Q_i = as.matrix(P_set[pair_idx,])
 		 syn_i = P_i + g*(Q_i - P_i)
 		 syn_dat = rbind(syn_dat,syn_i)
-			 
+			  if(show_process)
+				{	 
+					info <- sprintf("%d%% done", round((i)*100/(sizeP)))
+					setWinProgressBar(pb, i, sprintf("ADASYN (%s)", info), info)
+				}
 		}
 }
+	 
+	if(show_process)
+		{	close(pb)
+		}
 
 P_set[,ncD+1] = P_class		
 colnames(P_set)=c(colnames(X),"class")
